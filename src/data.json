@@ -8,7 +8,7 @@
       "나물을 올린다.",
       "고추장을 곁들인다."
     ],
-    "images": ["src/images/bibim.jpg", "src/images/bibim.jpg", "src/images/bibim.jpg"]
+    "images": ["src/images/bibim1.jpg", "src/images/bibim2.jpg", "src/images/bibim3.jpg"]
   },
   {
     "음식명": "스테이크",
@@ -18,6 +18,6 @@
       "굽는다",
       "뒤집는다"
     ],
-    "images": ["src/images/steak.jpg", "src/images/steak.jpg", "src/images/steak.jpg"]
+    "images": ["src/images/steak1.jpg", "src/images/steak2.jpg", "src/images/steak3.jpg"]
   }
 ]
