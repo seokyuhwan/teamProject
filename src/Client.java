@@ -60,7 +60,6 @@ public class Client extends JFrame {
                     return false;
                 }
             };
-
             recipeTable = new JTable(tableModel);
             recipeTable.addMouseListener(new MouseAdapter() {
                 @Override
@@ -78,7 +77,6 @@ public class Client extends JFrame {
             setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
             add(scrollTable);
         }
-
         private String[][] RecipeListData() {
             try (Socket socket = new Socket("localhost", 8080);
                  ObjectOutputStream output = new ObjectOutputStream(socket.getOutputStream());
@@ -97,9 +95,8 @@ public class Client extends JFrame {
             } catch (IOException | ClassNotFoundException e) {
                 e.printStackTrace();
             }
-            return new String[0][0]; // 예외 발생 시 빈 배열 반환
+            return new String[0][0];
         }
-
 
         private Recipe RecipeDetailData(String recipeName) {
             try (Socket socket = new Socket("localhost", 8080);
@@ -158,8 +155,17 @@ public class Client extends JFrame {
     }
 
     class search extends JPanel {
+        private JTextField Search_Input;
+        private JButton Search_Button;
         public search() {
-            setBackground(Color.CYAN); // 임시 색상
+            Search_Input = new JTextField(30);
+            add(Search_Input);
+            Search_Button=new JButton("검색");
+            Search_Button.addActionListener(e -> {
+                String Search_Content=Search_Input.getText();
+                Search_Input.setText("");
+            });
+            add(Search_Button);
         }
     }
 
