@@ -35,7 +35,6 @@ public class StopWatch {
         buttonPanel.add(resetButton);
         frame.add(buttonPanel, BorderLayout.SOUTH);
 
-        // 버튼 동작
         startButton.addActionListener(e -> {
             if (timer != null && timer.isRunning()) return; // 이미 실행 중이면 무시
             timer = new Timer(1000, new ActionListener() {

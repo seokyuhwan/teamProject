@@ -22,7 +22,6 @@ public class Login {
         gbc.insets = new Insets(10, 10, 10, 10); // 컴포넌트 간 여백
         gbc.fill = GridBagConstraints.HORIZONTAL; // 컴포넌트 크기 확장
 
-        // ID 레이블과 입력 필드
         JLabel userLabel = new JLabel("ID:");
         gbc.gridx = 0; // 첫 번째 열
         gbc.gridy = 0; // 첫 번째 행
@@ -141,8 +140,8 @@ public class Login {
         frame.setVisible(true);
     }
 
-    private static void openMainApp() {
-        Client mainFrame = new Client();
+    public static void openMainApp() {
+        Main mainFrame = new Main();
         mainFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         mainFrame.setVisible(true);
     }
