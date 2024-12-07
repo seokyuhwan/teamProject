@@ -94,11 +94,37 @@ public class Recipe extends JPanel {
         searchField.setText("");
         recipeList.setListData(NameAndTimes.keySet().toArray(new String[0]));
     }
-
+    //업로드 기능 새로구현예정
     private void uploadRecipe() {
         JFrame newFrame = new JFrame("레시피 업로드");
         newFrame.setSize(400, 300);
         newFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         newFrame.setVisible(true);
     }
+    // 레시피 업로드 기능
+    /*private void uploadRecipe() {
+        JFileChooser fileChooser = new JFileChooser();
+        fileChooser.setDialogTitle("레시피 파일 선택");
+        fileChooser.setMultiSelectionEnabled(false);
+        fileChooser.setFileFilter(new javax.swing.filechooser.FileNameExtensionFilter("텍스트 파일", "txt"));
+
+        int userSelection = fileChooser.showOpenDialog(this);
+        if (userSelection == JFileChooser.APPROVE_OPTION) {
+            File selectedFile = fileChooser.getSelectedFile();
+            if (selectedFile != null) {
+                String fileName = selectedFile.getName();
+                String destinationPath = "C:/Users/Jieun/Documents/레시피/" + fileName;
+                File destinationFile = new File(destinationPath);
+
+                try {
+                    // 파일 복사
+                    Files.copy(selectedFile.toPath(), destinationFile.toPath(), StandardCopyOption.REPLACE_EXISTING);
+                    JOptionPane.showMessageDialog(this, "레시피가 업로드되었습니다.", "업로드 완료", JOptionPane.INFORMATION_MESSAGE);
+                } catch (IOException e) {
+                    JOptionPane.showMessageDialog(this, "파일 업로드 중 오류가 발생했습니다.", "오류", JOptionPane.ERROR_MESSAGE);
+                    e.printStackTrace();
+                }
+            }
+        }
+     }*/
 }
