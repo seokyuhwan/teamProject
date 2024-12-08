@@ -42,7 +42,7 @@ public class Recipe extends JPanel {
 
         inputPanel.add(new JLabel("이름:"));
         inputPanel.add(searchField);
-        inputPanel.add(new JLabel("조리 시간:"));
+        inputPanel.add(new JLabel("최대조리 시간:"));
         inputPanel.add(timeField);
         inputPanel.add(searchButton);
         inputPanel.add(resetButton);
