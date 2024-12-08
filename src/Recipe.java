@@ -1,7 +1,14 @@
 import javax.swing.*;
+import javax.swing.filechooser.FileNameExtensionFilter;
 import java.awt.*;
-import java.util.ArrayList;
-import java.util.HashMap;
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.StandardCopyOption;
+import java.util.*;
+import java.util.List;
 
 public class Recipe extends JPanel {
     private JTextField timeField;
@@ -94,37 +101,110 @@ public class Recipe extends JPanel {
         searchField.setText("");
         recipeList.setListData(NameAndTimes.keySet().toArray(new String[0]));
     }
-    //업로드 기능 새로구현예정
     private void uploadRecipe() {
-        JFrame newFrame = new JFrame("레시피 업로드");
-        newFrame.setSize(400, 300);
-        newFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-        newFrame.setVisible(true);
-    }
-    // 레시피 업로드 기능
-    /*private void uploadRecipe() {
-        JFileChooser fileChooser = new JFileChooser();
-        fileChooser.setDialogTitle("레시피 파일 선택");
-        fileChooser.setMultiSelectionEnabled(false);
-        fileChooser.setFileFilter(new javax.swing.filechooser.FileNameExtensionFilter("텍스트 파일", "txt"));
+        JFrame uploadFrame = new JFrame("레시피 업로드");
+        uploadFrame.setSize(500, 500);
+        uploadFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+        uploadFrame.setLayout(new BorderLayout());
 
-        int userSelection = fileChooser.showOpenDialog(this);
-        if (userSelection == JFileChooser.APPROVE_OPTION) {
-            File selectedFile = fileChooser.getSelectedFile();
-            if (selectedFile != null) {
-                String fileName = selectedFile.getName();
-                String destinationPath = "C:/Users/Jieun/Documents/레시피/" + fileName;
-                File destinationFile = new File(destinationPath);
+        JPanel inputPanel = new JPanel(new GridLayout(3, 2, 5, 5));
+        JTextField nameField = new JTextField(10);
+        JTextField timeField = new JTextField(10);
+        JTextArea contextArea = new JTextArea();
+        JScrollPane scrollPane = new JScrollPane(contextArea);
 
-                try {
-                    // 파일 복사
-                    Files.copy(selectedFile.toPath(), destinationFile.toPath(), StandardCopyOption.REPLACE_EXISTING);
-                    JOptionPane.showMessageDialog(this, "레시피가 업로드되었습니다.", "업로드 완료", JOptionPane.INFORMATION_MESSAGE);
-                } catch (IOException e) {
-                    JOptionPane.showMessageDialog(this, "파일 업로드 중 오류가 발생했습니다.", "오류", JOptionPane.ERROR_MESSAGE);
-                    e.printStackTrace();
+        JButton uploadImageButton = new JButton("이미지 업로드");
+        JButton enter = new JButton("저장");
+
+        DefaultListModel<String> imageListModel = new DefaultListModel<>();
+        JList<String> imageList = new JList<>(imageListModel);
+        JScrollPane imageScrollPane = new JScrollPane(imageList);
+
+        inputPanel.add(new JLabel("레시피 이름: "));
+        inputPanel.add(nameField);
+        inputPanel.add(new JLabel("조리 시간: "));
+        inputPanel.add(timeField);
+
+        uploadFrame.add(inputPanel, BorderLayout.NORTH);
+        uploadFrame.add(scrollPane, BorderLayout.CENTER);
+
+        JPanel bottomPanel = new JPanel(new BorderLayout());
+        bottomPanel.add(uploadImageButton, BorderLayout.NORTH);
+        bottomPanel.add(imageScrollPane, BorderLayout.CENTER);
+        bottomPanel.add(enter, BorderLayout.SOUTH);
+
+        uploadFrame.add(bottomPanel, BorderLayout.SOUTH);
+        uploadFrame.setVisible(true);
+        List<File> uploadedImages = new ArrayList<>();
+
+        uploadImageButton.addActionListener(e -> {
+            JFileChooser fileChooser = new JFileChooser();
+            fileChooser.setMultiSelectionEnabled(true);
+            fileChooser.setFileFilter(new FileNameExtensionFilter("이미지 파일", "jpg", "jpeg", "png"));
+            int result = fileChooser.showOpenDialog(uploadFrame);
+            if (result == JFileChooser.APPROVE_OPTION) {
+                File[] selectedFiles = fileChooser.getSelectedFiles();
+                for (File file : selectedFiles) {
+                    uploadedImages.add(file);
+                    imageListModel.addElement(file.getName());
                 }
+                JOptionPane.showMessageDialog(uploadFrame, "이미지가 추가되었습니다!", "성공", JOptionPane.INFORMATION_MESSAGE);
             }
-        }
-     }*/
+        });
+
+        enter.addActionListener(e -> {
+            String name = nameField.getText().trim();
+            String time = timeField.getText().trim();
+            String context = contextArea.getText().trim();
+
+            if (name.isEmpty() || time.isEmpty() || context.isEmpty()) {
+                JOptionPane.showMessageDialog(uploadFrame, "모든 필드를 채워주세요!", "오류", JOptionPane.ERROR_MESSAGE);
+                return;
+            }
+
+            if (NameAndTimes.containsKey(name)) {
+                JOptionPane.showMessageDialog(uploadFrame, "이미 존재하는 레시피 이름입니다. 다른 이름을 입력하세요.", "중복 오류", JOptionPane.ERROR_MESSAGE);
+                return;
+            }
+
+            try {
+                File recipesDir = new File("./src/Recipes/" + name);
+                if (!recipesDir.exists()) {
+                    recipesDir.mkdirs();
+                }
+
+                File recipeFile = new File("./src/Recipes/", name + ".txt");
+                try (BufferedWriter writer = new BufferedWriter(new FileWriter(recipeFile))) {
+                    writer.write("레시피 이름: " + name + "\n");
+                    writer.write("조리 시간: " + time + "분\n");
+                    writer.write(context);
+                }
+
+                if (!uploadedImages.isEmpty()) {
+                    int imageCounter = 1;
+                    for (File image : uploadedImages) {
+                        String newFileName = name + imageCounter + ".jpg";
+                        File destImage = new File(recipesDir, newFileName);
+                        Files.copy(image.toPath(), destImage.toPath(), StandardCopyOption.REPLACE_EXISTING);
+                        imageCounter++;
+                    }
+                }
+
+                int cookTime = Integer.parseInt(time);
+                NameAndTimes.put(name, cookTime);
+                RecipeTexts.put(name, context);
+                recipeList.setListData(NameAndTimes.keySet().toArray(new String[0]));
+
+                JOptionPane.showMessageDialog(uploadFrame, "레시피가 저장되었습니다!", "성공", JOptionPane.INFORMATION_MESSAGE);
+
+                uploadFrame.dispose();
+
+            } catch (IOException ex) {
+                JOptionPane.showMessageDialog(uploadFrame, "파일 저장 중 오류가 발생했습니다.", "오류", JOptionPane.ERROR_MESSAGE);
+                ex.printStackTrace();
+            } catch (NumberFormatException ex) {
+                JOptionPane.showMessageDialog(uploadFrame, "유효한 숫자를 입력하세요 (조리 시간).", "입력 오류", JOptionPane.ERROR_MESSAGE);
+            }
+        });
+    }
 }
