@@ -14,7 +14,7 @@ public class Recipe extends JPanel {
     private JTextField timeField;
     private JTextField searchField;
     private JButton resetButton;
-    private JButton searchButton;
+    private JButton searchButton, timerButton;
     private JButton uploadButton;
     private JList<String> recipeList;
     private Main mainFrame;
@@ -42,21 +42,34 @@ public class Recipe extends JPanel {
 
         inputPanel.add(new JLabel("이름:"));
         inputPanel.add(searchField);
-        inputPanel.add(new JLabel("조리 시간:"));
+        inputPanel.add(new JLabel("최대조리 시간:"));
         inputPanel.add(timeField);
         inputPanel.add(searchButton);
         inputPanel.add(resetButton);
 
         add(inputPanel, BorderLayout.NORTH);
 
+        JPanel sidePanel = new JPanel();
+        sidePanel.setLayout(new BoxLayout(sidePanel, BoxLayout.Y_AXIS));
+
         JPanel uploadPanel = new JPanel();
         uploadPanel.setLayout(new FlowLayout(FlowLayout.RIGHT));
 
+        //레시피 업로드 버튼
         uploadButton = new JButton("레시피 업로드");
-        uploadButton.addActionListener(e -> uploadRecipe());
 
-        uploadPanel.add(uploadButton);
-        add(uploadPanel, BorderLayout.EAST);
+        uploadButton.addActionListener(e -> uploadRecipe());
+        sidePanel.add(uploadButton);
+
+        sidePanel.add(Box.createVerticalStrut(20));
+
+        // 타이머 버튼
+        timerButton = new JButton("타이머");
+
+        timerButton.addActionListener(e -> StopWatch.startStopWatch());
+        sidePanel.add(timerButton);
+
+        add(sidePanel, BorderLayout.EAST);
 
         recipeList = new JList<>(NameAndTimes.keySet().toArray(new String[0]));
         recipeList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
