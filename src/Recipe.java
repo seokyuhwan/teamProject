@@ -1,5 +1,10 @@
+package teamProject;
 import javax.swing.*;
 import java.awt.*;
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.StandardCopyOption;
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -9,6 +14,7 @@ public class Recipe extends JPanel {
     private JButton resetButton;
     private JButton searchButton;
     private JButton uploadButton;
+    private JButton timerButton;
     private JList<String> recipeList;
     private Main mainFrame;
     private HashMap<String, Integer> NameAndTimes;
@@ -42,14 +48,25 @@ public class Recipe extends JPanel {
 
         add(inputPanel, BorderLayout.NORTH);
 
-        JPanel uploadPanel = new JPanel();
-        uploadPanel.setLayout(new FlowLayout(FlowLayout.RIGHT));
+        JPanel sidePanel = new JPanel();
+        sidePanel.setLayout(new BoxLayout(sidePanel, BoxLayout.Y_AXIS));
 
+        
+        //레시피 업로드 버튼
         uploadButton = new JButton("레시피 업로드");
+     
         uploadButton.addActionListener(e -> uploadRecipe());
+        sidePanel.add(uploadButton);
+        
+        sidePanel.add(Box.createVerticalStrut(20));
+        
+        // 타이머 버튼
+        timerButton = new JButton("타이머");
+   
+        timerButton.addActionListener(e -> StopWatch.startStopWatch());
+        sidePanel.add(timerButton);
 
-        uploadPanel.add(uploadButton);
-        add(uploadPanel, BorderLayout.EAST);
+        add(sidePanel, BorderLayout.EAST);
 
         recipeList = new JList<>(NameAndTimes.keySet().toArray(new String[0]));
         recipeList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
@@ -94,15 +111,16 @@ public class Recipe extends JPanel {
         searchField.setText("");
         recipeList.setListData(NameAndTimes.keySet().toArray(new String[0]));
     }
+    /*
     //업로드 기능 새로구현예정
     private void uploadRecipe() {
         JFrame newFrame = new JFrame("레시피 업로드");
         newFrame.setSize(400, 300);
         newFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         newFrame.setVisible(true);
-    }
+    }*/
     // 레시피 업로드 기능
-    /*private void uploadRecipe() {
+    private void uploadRecipe() {
         JFileChooser fileChooser = new JFileChooser();
         fileChooser.setDialogTitle("레시피 파일 선택");
         fileChooser.setMultiSelectionEnabled(false);
@@ -126,5 +144,5 @@ public class Recipe extends JPanel {
                 }
             }
         }
-     }*/
+     }
 }
