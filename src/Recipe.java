@@ -89,21 +89,21 @@ public class Recipe extends JPanel {
     private void filterRecipes() {
         try {
             String timeText = timeField.getText().trim();
-            int time = Integer.MAX_VALUE;
-            if (!timeText.isEmpty()) {
-                time = Integer.parseInt(timeText);
+            final int maxTime;
+            if (timeText.isEmpty()) {
+                maxTime = Integer.MAX_VALUE;
+            } else {
+                maxTime = Integer.parseInt(timeText);
             }
             String searchText = searchField.getText().toLowerCase();
-            ArrayList<String> filteredRecipes = new ArrayList<>();
 
-            for (String key : NameAndTimes.keySet()) {
-                int value = NameAndTimes.get(key);
-                if ((value <= time || timeText.isEmpty()) && (searchText.isEmpty() || key.toLowerCase().contains(searchText))) {
-                    filteredRecipes.add(key);
-                }
-            }
+            String[] filteredRecipes = NameAndTimes.entrySet().stream()
+                    .filter(entry -> (entry.getValue() <= maxTime)
+                            && (searchText.isEmpty() || entry.getKey().toLowerCase().contains(searchText)))
+                    .map(Map.Entry::getKey)
+                    .toArray(String[]::new);
 
-            recipeList.setListData(filteredRecipes.toArray(new String[0]));
+            recipeList.setListData(filteredRecipes);
         } catch (NumberFormatException e) {
             JOptionPane.showMessageDialog(this, "유효한 숫자를 입력하세요.", "입력 오류", JOptionPane.ERROR_MESSAGE);
         }
