@@ -44,14 +44,6 @@ public class DataHandle {
     public HashMap<String, String> getRecipeText(){
         return RecipeText;
     }
-
-    public static void main(String[] args) {
-        DataHandle data = new DataHandle();
-        HashMap<String, Integer> hashmap= data.getRecipe();
-        System.out.println(hashmap);
-        HashMap<String, String> hashmapt= data.getRecipeText();
-        System.out.println(hashmapt);
-    }
 }
 
 
